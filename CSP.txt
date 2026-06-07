@@ -1,0 +1,142 @@
+# -----------------------------------------------
+# Constraint Satisfaction Problems
+# 1. N-Queens (Backtracking + Branch & Bound)
+# 2. Graph Coloring (Backtracking)
+# -----------------------------------------------
+
+# ---------- N-Queens using Backtracking ----------
+
+def is_safe_bt(board, row, col, n):
+
+    for i in range(row):
+
+        # Check same column or diagonal attack
+        if board[i] == col or abs(board[i] - col) == abs(i - row):
+            return False
+
+    return True
+
+
+def nqueens_backtracking(board, row, n):
+
+    if row == n:
+        print("N-Queens (Backtracking) Solution:", board)
+        return True
+
+    for col in range(n):
+
+        if is_safe_bt(board, row, col, n):
+
+            board[row] = col
+
+            if nqueens_backtracking(board, row + 1, n):
+                return True
+
+    return False
+
+
+# ---------- N-Queens using Branch and Bound ----------
+
+def nqueens_branch_bound(row, cols, d1, d2, board, n):
+
+    if row == n:
+        print("N-Queens (Branch & Bound) Solution:", board)
+        return True
+
+    for col in range(n):
+
+        # Check if column and diagonals are free
+        if not cols[col] and not d1[row - col] and not d2[row + col]:
+
+            cols[col] = True
+            d1[row - col] = True
+            d2[row + col] = True
+
+            board[row] = col
+
+            if nqueens_branch_bound(row + 1, cols, d1, d2, board, n):
+                return True
+
+            # Backtrack
+            cols[col] = False
+            d1[row - col] = False
+            d2[row + col] = False
+
+    return False
+
+
+# ---------- Graph Coloring using Backtracking ----------
+
+def is_safe_color(v, color, c, graph):
+
+    for i in range(len(graph)):
+
+        # Adjacent vertices cannot have same color
+        if graph[v][i] == 1 and color[i] == c:
+            return False
+
+    return True
+
+
+def graph_coloring(graph, m, color, v):
+
+    if v == len(graph):
+        print("Graph Coloring Solution:", color)
+        return True
+
+    for c in range(1, m + 1):
+
+        if is_safe_color(v, color, c, graph):
+
+            color[v] = c
+
+            if graph_coloring(graph, m, color, v + 1):
+                return True
+
+            # Backtrack
+            color[v] = 0
+
+    return False
+
+
+# ---------- Main Program ----------
+
+if __name__ == "__main__":
+
+    # N-Queens size
+    n = 4
+
+    print("\n--- Solving N-Queens using Backtracking ---")
+
+    board = [-1] * n
+
+    nqueens_backtracking(board, 0, n)
+
+
+    print("\n--- Solving N-Queens using Branch and Bound ---")
+
+    cols = [False] * n
+    d1 = [False] * (2 * n)
+    d2 = [False] * (2 * n)
+
+    board = [-1] * n
+
+    nqueens_branch_bound(0, cols, d1, d2, board, n)
+
+
+    # Graph Coloring Problem
+
+    print("\n--- Solving Graph Coloring using Backtracking ---")
+
+    graph = [
+        [0, 1, 1, 1],
+        [1, 0, 1, 0],
+        [1, 1, 0, 1],
+        [1, 0, 1, 0]
+    ]
+
+    m = 3   # Number of colors
+
+    color = [0] * len(graph)
+
+    graph_coloring(graph, m, color, 0)

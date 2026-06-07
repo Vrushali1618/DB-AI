@@ -1,0 +1,57 @@
+maze = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0]
+]
+
+start, goal = (0, 0), (4, 4)
+
+# Heuristic function (Manhattan distance)
+def h(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+# Find valid neighbors
+def nbrs(x, y):
+    steps = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+    return [
+        (x + dx, y + dy)
+        for dx, dy in steps
+        if 0 <= x + dx < 5 and 0 <= y + dy < 5
+        and maze[x + dx][y + dy] == 0
+    ]
+
+# A* Algorithm
+def astar(s, g):
+    open_set = {s}
+    gscore = {s: 0}
+    came = {}
+
+    while open_set:
+        n = min(open_set, key=lambda x: gscore[x] + h(x, g))
+
+        if n == g:
+            path = [n]
+
+            while n in came:
+                n = came[n]
+                path.append(n)
+
+            return path[::-1]
+
+        open_set.remove(n)
+
+        for nb in nbrs(*n):
+            new = gscore[n] + 1
+
+            if nb not in gscore or new < gscore[nb]:
+                gscore[nb] = new
+                came[nb] = n
+                open_set.add(nb)
+
+    return None
+
+# Driver Code
+print("Path found:", astar(start, goal))

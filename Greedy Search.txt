@@ -1,0 +1,147 @@
+# Greedy Search Algorithm - Selection Sort
+
+def selection_sort(arr):
+
+    n = len(arr)
+
+    # Traverse through all array elements
+    for i in range(n - 1):
+
+        # Assume current position has minimum element
+        min_idx = i
+
+        # Find the minimum element in remaining unsorted array
+        for j in range(i + 1, n):
+
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+
+        # Swap the found minimum element with first unsorted element
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+
+
+# Example
+arr = [64, 25, 12, 22, 11]
+
+print("Original array:", arr)
+
+selection_sort(arr)
+
+print("Sorted array:", arr)
+
+
+# Greedy Algorithm for Job Scheduling
+
+# Format: (JobID, Deadline, Profit)
+jobs = [
+    ('J1', 2, 100),
+    ('J2', 1, 19),
+    ('J3', 2, 27),
+    ('J4', 1, 25),
+    ('J5', 3, 15)
+]
+
+# Sort jobs by profit in descending order
+jobs.sort(key=lambda x: x[2], reverse=True)
+
+n = len(jobs)
+
+# Track free time slots
+slots = [False] * n
+
+# Store final job sequence
+result = ['-1'] * n
+
+# Store total profit
+total_profit = 0
+
+# Schedule jobs
+for job in jobs:
+
+    job_id, deadline, profit = job
+
+    # Find a free slot before deadline
+    for j in range(min(n, deadline) - 1, -1, -1):
+
+        if not slots[j]:
+
+            slots[j] = True
+            result[j] = job_id
+            total_profit += profit
+            break
+
+# Print scheduled jobs
+print("Job order:", [r for r in result if r != '-1'])
+
+# Print maximum profit
+print("Total Profit:", total_profit)
+
+
+
+# Prim's Algorithm for Minimum Spanning Tree (MST)
+
+import sys
+
+def prims(graph):
+
+    n = len(graph)
+
+    # Track selected vertices
+    selected = [False] * n
+
+    # Start from first vertex
+    selected[0] = True
+
+    edges = 0
+
+    print("Edges in MST:")
+
+    # MST will have (n - 1) edges
+    while edges < n - 1:
+
+        minimum = sys.maxsize
+
+        x = y = 0
+
+        # Find minimum edge
+        for i in range(n):
+
+            if selected[i]:
+
+                for j in range(n):
+
+                    # Select edge only if:
+                    # 1. Vertex j is not selected
+                    # 2. There is an edge
+                    if not selected[j] and graph[i][j]:
+
+                        if minimum > graph[i][j]:
+
+                            minimum = graph[i][j]
+
+                            x, y = i, j
+
+        print(f"{x} - {y} : {graph[x][y]}")
+
+        # Include selected vertex in MST
+        selected[y] = True
+
+        edges += 1
+
+
+# Adjacency Matrix Representation
+graph = [
+
+    [0, 2, 0, 6, 0],
+
+    [2, 0, 3, 8, 5],
+
+    [0, 3, 0, 0, 7],
+
+    [6, 8, 0, 0, 9],
+
+    [0, 5, 7, 9, 0]
+]
+
+# Run Prim's Algorithm
+prims(graph)
